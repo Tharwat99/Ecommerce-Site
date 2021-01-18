@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Check Out{% endblock title%}
+{% block styles %}
+<link href="{% static 'css/payment.css' %}" rel="stylesheet">
+{% endblock styles%}
+{% block content %}
+<div class = 'shop margin'></div>
+<main class="">
+  <div class="container wow fadeIn">
+    <h2 class="my-5 h2 text-center">Payment</h2>
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <div class="card mb-5 ">
+          <script src="https://js.stripe.com/v3/"></script>
+          {% if card %}
+            <div style="padding: 5px 30px;">
+              <div class = 'custom-control custom-checkbox'>
+                <input type="checkbox" class = 'custom-control-input' 
+                name="use_default_card"  id = 'use_default_card'/>
+                <label class = 'custom-control-label' for = 'use_default_card' > 
+                  Use Default Card : **** **** **** {{card.last4}}
+                  <span>Exp : {{ card.exp_month }}/{{card.exp_year}}</span>
+                </label>
+              </div>
+            </div>
+          {% endif %}
+          <div class = 'default-card-form' style = 'display: none'>
+            <form action="." method = 'POST' class = 'stripe-form'>{% csrf_token%}
+              <input type="hidden" name = 'use_default' value="true">
+              <div class = "stripe-form-row">
+                <button id = 'stripe-btn' type = 'submit'>Submit Payment</button>
+              </div>
+              <div id = 'card-errors' role = 'alert'></div>
+            </form>
+          </div>
+          <div class = 'new-card-form'>
+            <form action="." method="POST" id="stripe-form" id = 'stripe-form'>{% csrf_token %}
+              <div class="stripe-form-row" id =  'CreditCard'>
+                <label for="card-element" id ='stripe-btn-label'>
+                  Credit or debit card
+                </label>
+                <div id="card-element" class="StripeElement StripeElement--empty">
+                  <div class="__PrivateStripeElement" style="margin: 0px !important; padding: 0px !important; border: none !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
+                  </div>
+                </div>
+                <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
+                </div>
+              </div>
+              <div class = 'stripe-form-row'>
+                <button id ='stripe-btn' type = 'submit'>Submit Payment</button>
+              </div>
+              <div class = 'stripe-form-row' style="margin: 10px">
+                <div class = 'custom-control custom-checkbox'>
+                  <input type="checkbox" class = 'custom-control-input' name="save_card_info"  
+                  id = 'save_card_info'/>
+                  <label class = 'custom-control-label' for = 'save_card_info' > 
+                    Save for future purchases
+                  </label>
+                </div>
+              </div>
+              <div id = 'card-errors' role = 'alert'></div>
+            </form>
+          </div>
+        </div>
+      {% include 'order_snippet.html'%}
+    </div>
+  </div>
+</main>
+{% endblock content%}
+{% block scripts %} 
+<script type="text/javascript" src="{% static 'js/payment.js'%}"></script>
+<script type="text/javascript">
+  
+  var default_card_form = $('.default-card-form')
+  var new_card_form     = $('.new-card-form')
+  var use_default_card  = document.querySelector('input[name = use_default_card]')
+  use_default_card.addEventListener('change',function(){
+    if(this.checked){
+      new_card_form.hide()
+      default_card_form.show()
+    }else{
+      new_card_form.show()
+      default_card_form.hide()
+    }
+  })
+
+</script>
+{% endblock scripts%}

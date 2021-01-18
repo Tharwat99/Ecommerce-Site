@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Prdouct " {{product.title}} "{% endblock title%}
+{% block content %}
+
+<div class = 'shop margin'></div>
+  <main class="">
+    <div class="container dark-grey-text ">
+    <div class="row wow fadeIn text-center">
+        <div class="col-md-5 mb-4">
+          <div class = 'card' style="border: 1px solid #AAA;box-shadow: 5px 5px 5px #666;min-height: 300px;max-width:300px;margin: auto">
+            <img src="{{product.image.url}}" class=""  alt="" style="min-height: 300px;max-width: 300px;margin: auto">
+          </div>
+      </div>
+        <div class="col-md-7">
+          <div class="p-">
+            <div class="mb-2">
+              <a href="">
+                <span class="badge purple mr-1">{{ product.get_category_display }}</span>
+              </a>
+            </div>
+            <h2>{{ product.title }}</h2>
+            {% if product.category %}
+            <a href="/?query={{product.category.title}}" class="grey-text">  
+              <h4 class="badge badge-{{product.category.get_label_display}}" >
+                {{product.category.title}}
+              </h4>
+            </a>
+            {% endif %}
+            {% if product.tag %}
+            <a href="/?query={{product.tag.title}}" class="grey-text">  
+              <h5 class="badge badge-pull {{product.tag.get_label_display}}-color">
+                {{ product.tag.title}}
+              </h5>
+            </a>
+            {% endif %}
+            <p class="lead">
+              {% if product.discount_price%}
+              <span class="mr-2 gray-text">
+                <del>${{ product.price }}</del> 
+              </span>
+              <span class = 'h5 green-text'>${{ product.discount_price }}</span>
+              {% else %}
+              <span class = 'h5 green-text'>${{ product.price }}</span>
+              {%endif %}
+            </p>
+
+            <p class=" h4 ">Description</p>
+
+            <p class ='lead'>{{ product.description }}.</p>
+            <a href = '{{product.add_to_cart}}' class = 'btn btn-primary  btn-md  '>
+              Add to cart<i class="fa fa-shopping-cart fa-fw ml-1"></i> 
+            </a>
+            <a href = '{{product.remove_from_cart}}' class = 'btn btn-danger btn-md '>
+            Remove From Cart<i class="fa fa-trash fa-fw ml-1"></i> 
+            </a>
+            
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row d-flex justify-content-center wow fadeIn">
+        <div class="col-md-6 text-center">
+          <h4 class="my-4 h4">Additional Products</h4>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-center wow fadeIn">
+        {% for ad_product in additional_products %}
+        <div class="col-lg-2 col-sm-12 mb-4">
+          <a href = '{{ ad_product.get_absolute_url }}'>
+          <img src="{{ad_product.image.url}}" class="img-fluid" alt="" >
+          </a> 
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+  {% endblock content %}

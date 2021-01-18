@@ -1,0 +1,53 @@
+{% load cart_temp_tags %}
+{% load extra_settings %}
+{% load static %}
+<nav class="navbar navbar-expand-md navbar-light dark fixed-top" role="navigation">
+  <div class = 'container'>
+    <a class="nav-brand waves-effect" href="\" style="font-size: 25px;">
+      <strong class="blue-text">{% get_setting 'SiteBrand' default='django-extra-settings' %}</strong>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>   
+    </button>
+    <div class="collapse navbar-collapse pull-right" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-brand waves-effect" href="\">
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+      </ul>
+        <ul class = 'navbar-nav'>
+          {% if user.is_authenticated %}
+          <li class="nav-item float-center">
+            <img src="{% static 'images/blank_user.gif' %}" style="width: 55px;height:55px;border:2px solid #555; border-radius:50%;" alt = 'image'><span style = 'padding: 10px;
+              margin: 0 0px 0px -11px;
+              border: 2px solid #555;
+              border-left: none;
+              overflow: hidden;
+              color: #FFF;
+              font-weight: bold;
+              font-size: large;'>{{user.username}}</span>
+          </li>
+          <li class="nav-item">
+            <a href="/accounts/logout" class="nav-link waves-effect btn btn-danger btn-sm mt-3" style="color:#FFF;font-weight: bold">
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a href="/accounts/login" class="nav-link waves-effect btn-primary btn-sm mr-2" style="color:#FFF;font-weight: bold">
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/accounts/signup" class="nav-link waves-effect btn-success btn-sm" style="color:#FFF;font-weight: bold">
+              Register
+            </a>
+          </li>
+          {% endif %}
+
+        </ul>
+    </div>
+  </div>
+</nav>

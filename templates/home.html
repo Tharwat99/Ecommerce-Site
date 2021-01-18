@@ -1,0 +1,162 @@
+{% extends 'parent.html' %}
+{% load static %}
+{% block title %}Products{% endblock title%}
+{% block content %}
+<!-- Home -->
+  <div class="home">
+    <!-- Home Slider -->
+    <div class="home_slider_container" >
+      <div class="owl-carousel owl-theme home_slider">
+        <img src = "{% static 'images/home_slider.jpg' %}">
+      </div>
+
+      <div class="home_page_nav" style="top: 150px;">
+        <ul class="d-flex flex-column align-items-end justify-content-end">
+          <li><a href="#" data-scroll-to="#destinations">Offers<span>01</span></a></li>
+          <li><a href="#" data-scroll-to="#testimonials">Testimonials<span>02</span></a></li>
+          <li><a href="#" data-scroll-to="#news">Latest<span>03</span></a></li>
+        </ul>
+      </div>
+    <div class="home_search" style="top: 200px">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="home_search_container">
+            <div class="home_search_title">Search for your product</div>
+            <div class="home_search_content">
+              <form action="#" class="home_search_form" id="home_search_form">
+                <div class="d-flex flex-lg-row flex-column align-items-start justify-content-lg-between justify-content-start">
+                  <input type="text" class="search_input search_input_1" placeholder="City" required="required">
+                  <input type="text" class="search_input search_input_2" placeholder="Departure" required="required">
+                  <input type="text" class="search_input search_input_3" placeholder="Arrival" required="required">
+                  <input type="text" class="search_input search_input_4" placeholder="Budget" required="required">
+                  <button class="home_search_button">search</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+  <div class="container">
+      {% if user.is_authenticated %}    
+      <nav class="navbar navbar-expand-lg navbar-dark mdb-color  mt-2 mb-5" >
+        <span class="navbar-brand">Categories : </span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+         <ul class="navbar-nav mr-auto">
+            <li class="nav-item cat-item {% if query == '' or query == None%} active {% endif %}">
+              <a class="nav-link" href="?query=">All
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            {% for cat in categories %}
+            <li class="nav-item cat-item {% if query == cat.title %} active {% endif %}" >
+              <a class="nav-link" href="?query={{cat.title}}">{{cat.title}}</a>
+            </li>
+            {% endfor %}
+          </ul>
+          <form class="form-inline" method="GET">
+            <div class="md-form my-0">
+              <input class="form-control mr-sm-2" type="text" name = 'query' placeholder="Search here ...." aria-label="Search">
+            </div>
+          </form>
+        </div>
+      </nav>
+      {% endif %} 
+      <section class="text-center mb-4">
+        <div class ='container'>
+          <div class="row wow fadeIn">
+            {% if not products %}
+            <div class="md-6 offset-4 alert-warning p-2">
+              <h2 class ='text-center'>Not found any products !</h2>
+              <a href = '/'>Return back to shop</a>
+            </div>
+            {% else %}
+            {% for item in products %}
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="view overlay">
+                  <img src = {{item.image.url}} class="card-img-top" style="max-height: 250px;max-width: 300px;margin: auto"> 
+                  <a href = '{{ item.get_absolute_url }}' >
+                    <div class="mask rgba-white-slight"></div>
+                  </a>
+                </div>
+                <div class="card-body text-center">
+                  {% if item.category %}
+                  <a href="?query={{item.category.title}}" class="grey-text">  
+                    <h5 class="badge badge-{{item.category.get_label_display}}" style="position: absolute;top: 2px;left:2px">
+                      {{item.category.title}}
+                    </h5>
+                  </a>
+                  {% endif %}
+                  <h5 class="font-weight-bold blue-text">
+                    <a href="{{ item.get_absolute_url }}" >
+                    <strong>
+                      {{item.title}}
+                    </strong>
+                    {% if item.tag %}
+                    <a href="?query={{item.tag.title}}">  
+                      <h5 class="badge badge-pull {{item.tag.get_label_display}}-color" 
+                          style="position: absolute;top: 2px;right:2px">
+                        {{ item.tag.title}}
+                      </h5>
+                    </a>
+                    {% endif %}
+                    </a>                  
+                  </h5>
+                  <h5 class="font-weight-bold blue-text">
+                    {% if item.discount_price%}
+                    <span class="mr-1" >
+                      <del class="grey-text">${{ item.price }}</del> 
+                    </span>
+                    <span class="black-text"> ${{ item.discount_price }}</span>
+                    {% else %}
+                    <span class="black-text">${{ item.price }}</span>
+                    {%endif %}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+          </div> 
+        </div>
+      </section>
+     {% if products %}
+      <div class="d-flex justify-content-center wow fadeIn">
+        <section class="pagination pg-blue ">
+          {% if products.has_previous %}
+          <div class="page-item">
+            <a class="page-link" href='?page={{products.previous_page_number}}{% if request.GET.query %}&query={{request.GET.query}} {% endif %}'
+            aria-label="Previous">
+              <span aria-hidden="true"><i class = 'fa fa-chevron-left fa-lg'></i></span>
+            </a>
+          </div>
+          {% endif %}
+          <div class="page-item active">
+            <a class="page-link" href="?page={{ products.number}}">{{ products.number}}
+              <span class="sr-only">(current)</span>
+            </a>
+          </div>
+          {% if products.has_next %}
+          <div class="page-item">
+            <a class="page-link" href='?page={{products.next_page_number}}{% if request.GET.query %}&query={{request.GET.query}} {% endif %}' aria-label="Next">
+              <span aria-hidden="true"><i class = 'fa fa-chevron-right fa-lg'></i></span>
+            </a>
+          </div>
+          {% endif %}
+        </section>
+      </div>
+      {% endif %}
+    </div>
+  <!-- Search -->
+
+  {% endblock content %}
